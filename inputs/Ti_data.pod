@@ -1,0 +1,11 @@
+file_format extxyz
+file_extension xyz
+path_to_training_data_set "fit/XYZ"
+path_to_test_data_set "fit/test"
+fitting_weight_energy 1000.0
+fitting_weight_force 1.0
+fitting_regularization_parameter 1e-10
+error_analysis_for_training_data_set 1
+error_analysis_for_test_data_set 1
+basename_for_output_files Ti
+precision_for_pod_coefficients 10

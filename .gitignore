@@ -1,0 +1,5 @@
+data/
+fit/
+*.log
+*.dump
+__pycache__/

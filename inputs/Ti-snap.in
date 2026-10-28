@@ -1,0 +1,60 @@
+[BISPECTRUM]
+numTypes = 1
+twojmax = 10
+rcutfac = 5.0
+rfac0 = 0.99363
+rmin0 = 0.0
+wj = 1.0
+radelem = 0.5
+type = Ti
+wselfallflag = 0
+chemflag = 0
+bzeroflag = 1
+quadraticflag = 0
+
+[CALCULATOR]
+calculator = LAMMPSSNAP
+energy = 1
+force = 1
+stress = 1
+
+[ESHIFT]
+Ti = 0.0
+
+[SOLVER]
+solver = SVD
+compute_testerrs = 1
+detailed_errors = 1
+
+[SCRAPER]
+scraper = xyz
+
+[PATH]
+dataPath = XYZ
+
+[OUTFILE]
+metrics = metrics.md
+potential = Ti_snap
+
+[REFERENCE]
+units = metal
+atom_style = atomic
+pair_style = hybrid/overlay zero 10.0 zbl 1.8 2.3
+pair_coeff1 = * * zero
+pair_coeff2 = * * zbl 22 22
+
+[GROUPS]
+group_sections = name training_size testing_size eweight fweight vweight
+group_types = str float float float float float
+smartweights = 0
+random_sampling = 0
+Init = 0.8 0.2 1000 1 1.0E-5
+Bulk = 0.8 0.2 1000 1 0.0
+
+[EXTRAS]
+dump_descriptors = 0
+dump_truth = 0
+dump_weights = 0
+
+[MEMORY]
+override = 0

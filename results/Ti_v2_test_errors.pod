@@ -1,0 +1,81 @@
+**************** Begin of Test Data Set ****************
+------------------------------------------------------
+ data file | number of configurations | number of atoms
+------------------------------------------------------
+ Bulk.xyz |               150        |       38400
+ Init.xyz |               150        |       38400
+------------------------------------------------------
+number of files: 2
+number of configurations in all files: 300
+number of atoms in all files: 76800
+minimum number of atoms: 256
+maximum number of atoms: 256
+**************** End of Test Data Set ****************
+**************** Begin of Memory Allocation ****************
+maximum number of atoms in periodic domain: 256
+maximum number of atoms in extended domain: 6912
+maximum number of neighbors in extended domain: 1769472
+size of double memory: 2354688
+size of descriptor matrix: 73 x 73
+**************** End of Memory Allocation ****************
+**************** Begin of Least-Squares Fitting ****************
+Configuration: # 1
+Configuration: # 101
+Configuration: # 201
+Configuration: # 301
+Configuration: # 401
+Configuration: # 501
+Configuration: # 601
+Configuration: # 701
+Configuration: # 801
+Configuration: # 901
+Configuration: # 1001
+Configuration: # 1101
+Configuration: # 1201
+Configuration: # 1301
+Configuration: # 1401
+Configuration: # 1501
+**************** Begin of Error Calculation ****************
+Configuration: # 1
+Configuration: # 101
+Configuration: # 201
+Configuration: # 301
+Configuration: # 401
+Configuration: # 501
+Configuration: # 601
+Configuration: # 701
+Configuration: # 801
+Configuration: # 901
+Configuration: # 1001
+Configuration: # 1101
+Configuration: # 1201
+Configuration: # 1301
+Configuration: # 1401
+Configuration: # 1501
+**************** End of Error Calculation ****************
+**************** Begin of Error Analysis for the Training Data Set ****************
+--------------------------------------------------------------------------------------------
+     File     | # configs |  # atoms  | MAE energy  | RMSE energy | MAE force  | RMSE force
+--------------------------------------------------------------------------------------------
+Bulk.xyz            900      230400     0.008311      0.010941      0.192046      0.256667  
+Init.xyz            600      153600     0.003498      0.004661      0.012689      0.017795  
+Omega.xyz            84         324     0.010131      0.015001      0.055326      0.106074  
+--------------------------------------------------------------------------------------------
+All files          1584      384324     0.006584      0.009391      0.120248      0.199071  
+--------------------------------------------------------------------------------------------
+**************** End of Error Analysis for the Training Data Set ****************
+**************** Begin of Error Calculation ****************
+Configuration: # 1
+Configuration: # 101
+Configuration: # 201
+**************** End of Error Calculation ****************
+**************** Begin of Error Analysis for the Test Data Set ****************
+--------------------------------------------------------------------------------------------
+     File     | # configs |  # atoms  | MAE energy  | RMSE energy | MAE force  | RMSE force
+--------------------------------------------------------------------------------------------
+Bulk.xyz            150       38400     0.009011      0.012019      0.197644      0.273511  
+Init.xyz            150       38400     0.003431      0.004544      0.013729      0.019134  
+--------------------------------------------------------------------------------------------
+All files           300       76800     0.006221      0.009086      0.105686      0.193874  
+--------------------------------------------------------------------------------------------
+**************** End of Error Analysis for the Test Data Set ****************
