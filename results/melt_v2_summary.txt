@@ -1,0 +1,14 @@
+run_1850: start 1850 K -> mean T (last half) = 1850 K, std 28 K
+  solid fraction by z-slab: [0.79 0.86 0.84 0.82 0.86 0.83 0.66 0.84 0.94 0.82 0.84 0.95]  total 0.84
+
+run_1900: start 1900 K -> mean T (last half) = 1883 K, std 32 K
+  solid fraction by z-slab: [0.88 0.62 0.59 0.53 0.52 0.8  0.89 0.86 0.85 0.5  0.52 0.83]  total 0.7
+
+run_1950: start 1950 K -> mean T (last half) = 1746 K, std 38 K
+  solid fraction by z-slab: [0.18 0.06 0.01 0.02 0.01 0.01 0.02 0.02 0.04 0.07 0.58 0.63]  total 0.14
+
+run_2000: start 2000 K -> mean T (last half) = 1867 K, std 29 K
+  solid fraction by z-slab: [0.01 0.   0.03 0.04 0.01 0.03 0.01 0.01 0.   0.02 0.01 0.01]  total 0.02
+
+Valid runs: some slabs mostly solid (>0.6) AND some mostly liquid (<0.3).
+The melting point is the mean T of the valid runs.

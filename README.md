@@ -64,9 +64,9 @@ This repository fits machine-learned interatomic potentials (MLIPs) for titanium
 | E(fcc) − E(hcp) (meV/atom) | 39 | 54 | 52 | 54 | 57 (GPAW, this work) |
 | **E(ω) − E(hcp) (meV/atom)** | −5 | +123 | +55 | **−1.7** | **−4 (GPAW, this work)** |
 | Vacancy formation (eV) | 2.19 | 1.78 | 2.08 | 2.43 | ≈ 2.0 (DFT)† |
-| Melting point (K) | not converged‡ | not run | **1877 ± 9** | running | 1941 (exp.) |
+| Melting point (K) | not converged‡ | not run | **1877 ± 9** | ≈ 1860§ | 1941 (exp.) |
 
-Experimental elastic constants are those provided with the dataset (4 K). †Approximate literature DFT value; see Hennig *et al.* 2008. ‡The MEAM coexistence run recrystallised; it needs a longer run with a larger liquid fraction.
+Experimental elastic constants are those provided with the dataset (4 K). †Approximate literature DFT value; see Hennig *et al.* 2008. ‡The MEAM coexistence run recrystallised; it needs a longer run with a larger liquid fraction. §POD v2: four larger coexistence runs (1,728 atoms, 60 ps, started at 1850–2000 K). The run that fully froze (mean 1850 K) and the run that fully melted (mean 1867 K) bracket T_m between about 1850 and 1867 K. One run (1950 K start) was inconsistent, most likely because the lateral box size is fixed during coexistence; a fully stress-free setup would remove this.
 
 ### 3. Melting point (POD v1)
 

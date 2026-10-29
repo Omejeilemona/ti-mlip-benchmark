@@ -3,3 +3,5 @@ fit/
 *.log
 *.dump
 __pycache__/
+melt_v2/
+log.lammps
