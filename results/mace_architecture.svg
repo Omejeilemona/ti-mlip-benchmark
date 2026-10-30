@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="545" viewBox="0 0 1100 545" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3b4453"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="1100" height="545" fill="#ffffff"/>
+  <text x="550" y="32" text-anchor="middle" font-size="20" font-weight="bold" fill="#14213d">MACE model used for Ti (2 interaction layers, 32 channels, correlation order 3)</text>
+
+  <!-- input -->
+  <g>
+    <rect x="20" y="80" width="150" height="150" rx="10" fill="#f4f1ea" stroke="#9a8f78"/>
+    <circle cx="95" cy="155" r="13" fill="#c2571a"/>
+    <circle cx="55" cy="120" r="9" fill="#7d8597"/><circle cx="135" cy="118" r="9" fill="#7d8597"/>
+    <circle cx="50" cy="190" r="9" fill="#7d8597"/><circle cx="140" cy="192" r="9" fill="#7d8597"/>
+    <circle cx="96" cy="208" r="9" fill="#7d8597"/>
+    <circle cx="95" cy="155" r="60" fill="none" stroke="#c2571a" stroke-dasharray="5 4"/>
+    <text x="95" y="252" text-anchor="middle" font-size="15" fill="#14213d">Positions r<tspan font-size="11" dy="4">i</tspan><tspan dy="-4">, species</tspan></text>
+    <text x="95" y="270" text-anchor="middle" font-size="13" fill="#5a6472">neighbours within r<tspan font-size="10" dy="4">c</tspan><tspan dy="-4"> = 5 Å</tspan></text>
+  </g>
+
+  <!-- interaction layer frame -->
+  <rect x="200" y="58" width="880" height="252" rx="14" fill="#eef2f7" stroke="#8aa0bf" stroke-dasharray="7 5"/>
+  <text x="215" y="80" font-size="14" font-weight="bold" fill="#2f4a73">Interaction layer t (repeated T = 2 times; receptive field 2 r<tspan font-size="10" dy="4">c</tspan><tspan dy="-4"> = 10 Å)</tspan></text>
+
+  <g font-size="14" fill="#14213d">
+    <rect x="215" y="98" width="195" height="170" rx="10" fill="#ffffff" stroke="#2f4a73"/>
+    <text x="312" y="122" text-anchor="middle" font-weight="bold">1. Edge embedding</text>
+    <text x="312" y="150" text-anchor="middle">R<tspan font-size="10" dy="4">kℓ</tspan><tspan dy="-4">(r</tspan><tspan font-size="10" dy="4">ij</tspan><tspan dy="-4">) · Y</tspan><tspan font-size="10" dy="4">ℓm</tspan><tspan dy="-4">(r̂</tspan><tspan font-size="10" dy="4">ij</tspan><tspan dy="-4">) · h</tspan><tspan font-size="10" dy="4">j</tspan></text>
+    <text x="312" y="180" text-anchor="middle" font-size="12" fill="#5a6472">learned radial MLP on</text>
+    <text x="312" y="196" text-anchor="middle" font-size="12" fill="#5a6472">8 Bessel functions × cutoff;</text>
+    <text x="312" y="212" text-anchor="middle" font-size="12" fill="#5a6472">spherical harmonics ℓ ≤ 3</text>
+    <text x="312" y="240" text-anchor="middle" font-size="12" fill="#5a6472">(bond length + direction)</text>
+
+    <rect x="430" y="98" width="195" height="170" rx="10" fill="#ffffff" stroke="#2f4a73"/>
+    <text x="527" y="122" text-anchor="middle" font-weight="bold">2. Density projection</text>
+    <text x="527" y="152" text-anchor="middle">A<tspan font-size="10" dy="4">i</tspan><tspan dy="-4"> = Σ</tspan><tspan font-size="10" dy="4">j</tspan><tspan dy="-4"> φ</tspan><tspan font-size="10" dy="4">ij</tspan></text>
+    <text x="527" y="182" text-anchor="middle" font-size="12" fill="#5a6472">sum over neighbours:</text>
+    <text x="527" y="198" text-anchor="middle" font-size="12" fill="#5a6472">neighbour density of atom i</text>
+    <text x="527" y="214" text-anchor="middle" font-size="12" fill="#5a6472">on a radial × angular basis</text>
+    <text x="527" y="240" text-anchor="middle" font-size="12" fill="#5a6472">(2-body, as in SNAP/ACE)</text>
+
+    <rect x="645" y="98" width="195" height="170" rx="10" fill="#ffffff" stroke="#2f4a73"/>
+    <text x="742" y="122" text-anchor="middle" font-weight="bold">3. Many-body basis</text>
+    <text x="742" y="152" text-anchor="middle">B<tspan font-size="10" dy="4">i</tspan><tspan dy="-4"> = C · Π</tspan><tspan font-size="10" dy="4">ξ=1..ν</tspan><tspan dy="-4"> A</tspan><tspan font-size="10" dy="4">i</tspan></text>
+    <text x="742" y="182" text-anchor="middle" font-size="12" fill="#5a6472">products of ν ≤ 3 densities,</text>
+    <text x="742" y="198" text-anchor="middle" font-size="12" fill="#5a6472">Clebsch–Gordan contracted</text>
+    <text x="742" y="214" text-anchor="middle" font-size="12" fill="#5a6472">to rotation invariants</text>
+    <text x="742" y="240" text-anchor="middle" font-size="12" fill="#5a6472">(up to 4-body per layer)</text>
+
+    <rect x="860" y="98" width="205" height="170" rx="10" fill="#ffffff" stroke="#2f4a73"/>
+    <text x="962" y="122" text-anchor="middle" font-weight="bold">4. Message + update</text>
+    <text x="962" y="152" text-anchor="middle">m<tspan font-size="10" dy="4">i</tspan><tspan dy="-4"> = W · B</tspan><tspan font-size="10" dy="4">i</tspan></text>
+    <text x="962" y="178" text-anchor="middle">h<tspan font-size="10" dy="-7">(t+1)</tspan><tspan font-size="10" dy="11">i</tspan><tspan dy="-4"> = U(h</tspan><tspan font-size="10" dy="-7">(t)</tspan><tspan font-size="10" dy="11">i</tspan><tspan dy="-4">, m</tspan><tspan font-size="10" dy="4">i</tspan><tspan dy="-4">)</tspan></text>
+    <text x="962" y="208" text-anchor="middle" font-size="12" fill="#5a6472">new learned features of</text>
+    <text x="962" y="224" text-anchor="middle" font-size="12" fill="#5a6472">atom i (32 scalar channels,</text>
+    <text x="962" y="240" text-anchor="middle" font-size="12" fill="#5a6472">max_L = 0)</text>
+  </g>
+
+  <g stroke="#3b4453" stroke-width="2" fill="none">
+    <line x1="170" y1="155" x2="211" y2="168" marker-end="url(#ar)"/>
+    <line x1="410" y1="183" x2="426" y2="183" marker-end="url(#ar)"/>
+    <line x1="625" y1="183" x2="641" y2="183" marker-end="url(#ar)"/>
+    <line x1="840" y1="183" x2="856" y2="183" marker-end="url(#ar)"/>
+    <!-- feedback loop: h_j of next layer -->
+    <path d="M962,268 L962,284 L312,284 L312,272" marker-end="url(#ar)" stroke="#2f4a73" stroke-dasharray="6 4"/>
+  </g>
+  <text x="637" y="302" text-anchor="middle" font-size="12" fill="#2f4a73">features h<tspan font-size="9" dy="-6">(t+1)</tspan><tspan dy="6"> feed the next layer</tspan></text>
+
+  <!-- readout row -->
+  <g font-size="14" fill="#14213d">
+    <rect x="215" y="350" width="250" height="110" rx="10" fill="#fdf3ea" stroke="#c2571a"/>
+    <text x="340" y="376" text-anchor="middle" font-weight="bold">5. Readout</text>
+    <text x="340" y="406" text-anchor="middle">ε<tspan font-size="10" dy="4">i</tspan><tspan dy="-4"> = E</tspan><tspan font-size="10" dy="4">0</tspan><tspan dy="-4"> + Σ</tspan><tspan font-size="10" dy="4">t</tspan><tspan dy="-4"> R</tspan><tspan font-size="10" dy="-7">(t)</tspan><tspan dy="7">(h</tspan><tspan font-size="10" dy="-7">(t)</tspan><tspan font-size="10" dy="11">i</tspan><tspan dy="-4">)</tspan></text>
+    <text x="340" y="434" text-anchor="middle" font-size="12" fill="#5a6472">E₀ = −7.494 eV (mean energy per atom)</text>
+
+    <rect x="500" y="350" width="250" height="110" rx="10" fill="#fdf3ea" stroke="#c2571a"/>
+    <text x="625" y="376" text-anchor="middle" font-weight="bold">6. Energy and forces</text>
+    <text x="625" y="406" text-anchor="middle">E = Σ<tspan font-size="10" dy="4">i</tspan><tspan dy="-4"> ε</tspan><tspan font-size="10" dy="4">i</tspan><tspan dy="-4">,   F</tspan><tspan font-size="10" dy="4">i</tspan><tspan dy="-4"> = −∂E/∂r</tspan><tspan font-size="10" dy="4">i</tspan></text>
+    <text x="625" y="434" text-anchor="middle" font-size="12" fill="#5a6472">forces by automatic differentiation</text>
+
+    <rect x="785" y="350" width="280" height="110" rx="10" fill="#f4f1ea" stroke="#9a8f78"/>
+    <text x="925" y="376" text-anchor="middle" font-weight="bold">Training (compare with DFT)</text>
+    <text x="925" y="406" text-anchor="middle">L = λ<tspan font-size="10" dy="4">E</tspan><tspan dy="-4">(ΔE/N)² + λ</tspan><tspan font-size="10" dy="4">F</tspan><tspan dy="-4">|ΔF|²</tspan></text>
+    <text x="925" y="434" text-anchor="middle" font-size="12" fill="#5a6472">λ<tspan font-size="9" dy="3">E</tspan><tspan dy="-3">: 1 → 1000 after epoch 75;  λ</tspan><tspan font-size="9" dy="3">F</tspan><tspan dy="-3"> = 100</tspan></text>
+  </g>
+  <g stroke="#3b4453" stroke-width="2" fill="none">
+    <path d="M1010,268 L1010,284 L1050,284 L1050,322 L340,322 L340,346" marker-end="url(#ar)"/>
+    <line x1="465" y1="405" x2="496" y2="405" marker-end="url(#ar)"/>
+    <line x1="750" y1="405" x2="781" y2="405" marker-end="url(#ar)"/>
+    <path d="M925,460 L925,490 L625,490 L625,464" marker-end="url(#ar)" stroke="#9a8f78" stroke-dasharray="6 4"/>
+  </g>
+  <text x="775" y="510" text-anchor="middle" font-size="12" fill="#5a6472">gradient of L with respect to all 53,584 parameters updates every learned part (AMSGrad)</text>
+</svg>

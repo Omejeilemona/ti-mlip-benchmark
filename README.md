@@ -32,7 +32,7 @@ This repository fits machine-learned interatomic potentials (MLIPs) for titanium
 
 ## Method: the physics and the equations
 
-All three model families (SNAP, POD and MACE) solve the same problem: learn the Born–Oppenheimer potential energy surface $E(\{\mathbf r\})$ of titanium from DFT, so that molecular dynamics can run with near-DFT accuracy at the cost of a classical potential. What separates them is how much physics is built into the functional form and how much is learned from data.
+All three model families (SNAP, POD and MACE) solve the same problem: learn the Born–Oppenheimer potential energy surface $E(\lbrace\mathbf r\rbrace)$ of titanium from DFT, so that molecular dynamics can run with near-DFT accuracy at the cost of a classical potential. What separates them is how much physics is built into the functional form and how much is learned from data.
 
 ### Physical constraints built into every model
 
@@ -40,31 +40,31 @@ These are not learned. They are imposed by construction, so the models obey them
 
 1. **Locality (nearsightedness of electronic matter).** In a metal, screening makes the energy of an atom depend only on its neighbourhood. The total energy is a sum of atomic energies, each a function of the neighbours within a cutoff $r_c = 5$ Å (the first two neighbour shells of Ti):
 
-$$
-E = \sum_{i=1}^{N} \varepsilon_i\big(\{\mathbf r_{ij}\}_{r_{ij}<r_c}\big), \qquad \mathbf r_{ij} = \mathbf r_j - \mathbf r_i .
-$$
+```math
+E = \sum_{i=1}^{N} \varepsilon_i\big(\lbrace \mathbf r_{ij}\rbrace _{r_{ij}\lt r_c}\big), \qquad \mathbf r_{ij} = \mathbf r_j - \mathbf r_i .
+```
 
    This makes the cost linear in $N$, and lets a model trained on 256-atom cells run on millions of atoms.
 
 2. **Symmetry.** $\varepsilon_i$ is invariant under translation, rotation and reflection (the Euclidean group E(3)) and under exchange of identical atoms. The models never see Cartesian coordinates directly, only descriptors built to be invariant.
 
 3. **Smoothness at the cutoff.** Every neighbour is weighted by a function that goes smoothly to zero at $r_c$, for example
-$f_c(r) = \tfrac12\left[1+\cos(\pi r/r_c)\right]$, so energies and forces stay continuous when atoms cross the cutoff sphere.
+$f_c(r) = \frac{1}{2}\big(1+\cos(\pi r/r_c)\big)$, so energies and forces stay continuous when atoms cross the cutoff sphere.
 
 4. **Energy conservation.** Forces and stress are exact derivatives of the same energy,
 
-$$
+```math
 \mathbf F_i = -\frac{\partial E}{\partial \mathbf r_i}, \qquad
 \sigma_{\alpha\beta} = \frac{1}{V}\sum_i \sum_{j} r_{ij,\alpha}\,\frac{\partial E}{\partial r_{ij,\beta}},
-$$
+```
 
    so the force field is conservative and MD conserves the total energy. This also means one model is fitted to energies, forces and virials together: each atom contributes three force components, which is far more data than one energy per cell.
 
 5. **Body-order expansion.** All three models are truncated many-body (cluster) expansions of the atomic energy,
 
-$$
-\varepsilon_i = V^{(1)} + \sum_{j} V^{(2)}(\mathbf r_{ij}) + \sum_{j<k} V^{(3)}(\mathbf r_{ij},\mathbf r_{ik}) + \sum_{j<k<l} V^{(4)}(\mathbf r_{ij},\mathbf r_{ik},\mathbf r_{il}) + \dots
-$$
+```math
+\varepsilon_i = V^{(1)} + \sum_{j} V^{(2)}(\mathbf r_{ij}) + \sum_{j\lt k} V^{(3)}(\mathbf r_{ij},\mathbf r_{ik}) + \sum_{j\lt k\lt l} V^{(4)}(\mathbf r_{ij},\mathbf r_{ik},\mathbf r_{il}) + \dots
+```
 
    The 2-body term carries the pair repulsion and cohesion, the 3-body term the bond angles (what separates hcp, bcc, fcc and ω), and the 4-body term dihedral-like correlations. The models differ in where they truncate and how they parametrise each term.
 
@@ -74,37 +74,37 @@ Together, these conditions fix the form of every model below; the DFT data only 
 
 Both write the atomic energy as a linear combination of descriptors $B_{ik}$, which are fixed functions of the neighbourhood:
 
-$$
+```math
 \varepsilon_i = c_0 + \sum_{k=1}^{K} c_k\, B_{ik}, \qquad
 E = N c_0 + \sum_k c_k \sum_i B_{ik}, \qquad
 \mathbf F_j = -\sum_k c_k \sum_i \frac{\partial B_{ik}}{\partial \mathbf r_j}.
-$$
+```
 
 Energy, forces and stress are all linear in the coefficients $\mathbf c$, so fitting is a weighted linear least-squares problem with a unique solution:
 
-$$
+```math
 \min_{\mathbf c}\; w_E \sum_{n} \left(\frac{E_n(\mathbf c) - E_n^{\mathrm{DFT}}}{N_n}\right)^2 + w_F \sum_{n}\sum_{i\in n} \big|\mathbf F_i(\mathbf c) - \mathbf F_i^{\mathrm{DFT}}\big|^2
 \;\;\Longrightarrow\;\;
 \mathbf c = \left(\mathbf A^{\!\top}\mathbf W\mathbf A\right)^{-1}\mathbf A^{\!\top}\mathbf W\,\mathbf y ,
-$$
+```
 
 where each row of $\mathbf A$ holds the descriptor sums (for an energy) or their derivatives (for a force component), $\mathbf y$ the DFT targets and $\mathbf W$ the weights. POD here uses $w_E = 1000$, $w_F = 1$. In practice the system is solved by SVD or QR rather than by inverting the normal matrix.
 
 **SNAP** (spectral neighbour analysis potential). The neighbour density of atom $i$, $\rho_i(\mathbf r) = \sum_j f_c(r_{ij})\,\delta(\mathbf r - \mathbf r_{ij})$, is mapped onto the 3-sphere and expanded in 4D hyperspherical harmonics $U^{j}_{m,m'}$ (Wigner D-matrices). The expansion coefficients $u^j_{m,m'}$ rotate like angular momenta, so their triple products contracted with Clebsch–Gordan coefficients are rotation invariant: the **bispectrum**
 
-$$
+```math
 B_{j_1 j_2 j} = \sum_{m,m'} \left(u^{j}_{m,m'}\right)^{*} \sum_{m_1,m_1'}\sum_{m_2,m_2'} C^{j m}_{j_1 m_1 j_2 m_2}\, C^{j m'}_{j_1 m_1' j_2 m_2'}\, u^{j_1}_{m_1,m_1'}\, u^{j_2}_{m_2,m_2'} .
-$$
+```
 
 With $2J_{\max} = 10$ this gives 91 descriptors, up to 4-body. A Ziegler–Biersack–Littmark (ZBL) screened-Coulomb pair term is added at short range, so atoms that come very close (as in a laser-driven collision cascade) feel the correct nuclear repulsion rather than an extrapolation.
 
 **POD** (proper orthogonal descriptors). The radial functions are not chosen by hand. A family of parametrised functions (spherical Bessel and inverse-power functions over a range of length scales) is sampled, and its principal modes, found by proper orthogonal decomposition (the same technique as principal components or Karhunen–Loève modes), become an orthonormal radial basis $R_k(r)$. Schematically the descriptors are
 
-$$
+```math
 B^{(2)}_{ik} = \sum_j R_k(r_{ij}), \qquad
 B^{(3)}_{ik\ell} = \sum_{j,l} R_k(r_{ij})\,R_k(r_{il})\,\cos^{\ell}\theta_{jil}, \qquad
 B^{(4)}_{\dots} \text{ (three angles)},
-$$
+```
 
 with 8 two-body radial functions, 6 three-body radial functions with angular degree up to 5, and 4 four-body radial functions with angular degree up to 3 (`inputs/Ti_param.pod`). POD keeps the cost and determinism of a linear model but uses a radial basis adapted to the problem.
 
@@ -112,38 +112,42 @@ with 8 two-body radial functions, 6 three-body radial functions with angular deg
 
 In MACE (multi-atomic cluster expansion), the atomic energy is no longer linear in fixed descriptors. Each atom carries learned features $h_{i}^{(t)}$ that are updated by **message passing** between neighbours, and the angular information is carried by spherical harmonics, so every intermediate quantity transforms correctly under rotation (**E(3) equivariance**).
 
+![MACE architecture](results/mace_architecture.svg)
+
+*Figure: the MACE model used here. Steps 1–4 form one interaction layer and are repeated twice; steps 5–6 turn the learned features into the energy and forces, which are compared with DFT during training.*
+
 **Step 1: one-particle basis.** For each neighbour, a learned radial function (a small neural network acting on 8 Bessel functions times $f_c$) is combined with spherical harmonics of the bond direction and the neighbour's features:
 
-$$
+```math
 \phi_{ij,k\ell m} = R^{(t)}_{k\ell}(r_{ij})\, Y_{\ell}^{m}(\hat{\mathbf r}_{ij}) \sum_{\tilde k} W^{(t)}_{k\tilde k}\, h^{(t)}_{j,\tilde k} .
-$$
+```
 
 **Step 2: atomic basis (density projection).** Summing over neighbours gives the neighbour density of atom $i$ projected on this basis, exactly as in SNAP and ACE:
 
-$$
+```math
 A^{(t)}_{i,k\ell m} = \sum_{j\in\mathcal N(i)} \phi_{ij,k\ell m} .
-$$
+```
 
 **Step 3: many-body basis.** Products of $\nu$ copies of $A$, contracted with generalised Clebsch–Gordan coefficients to the required symmetry $LM$, give $(\nu+1)$-body features at the cost of a single neighbour sum:
 
-$$
+```math
 B^{(t)}_{i,\eta k L M} = \sum_{\boldsymbol\ell \mathbf m} \mathcal C^{LM}_{\eta,\boldsymbol\ell \mathbf m} \prod_{\xi=1}^{\nu} A^{(t)}_{i,k\ell_\xi m_\xi}, \qquad \nu \le 3 \;(\text{correlation order } 3 \Rightarrow \text{4-body}).
-$$
+```
 
 **Step 4: message and update.**
 
-$$
+```math
 m^{(t)}_{i,kLM} = \sum_{\nu}\sum_{\eta} W^{(t)}_{z_i k L,\eta\nu}\, B^{(t)}_{i,\eta k L M}, \qquad
 h^{(t+1)}_{i} = U^{(t)}\big(h^{(t)}_{i},\, m^{(t)}_{i}\big),
-$$
+```
 
 where $U$ is a linear update with a residual connection.
 
 **Step 5: energy readout.**
 
-$$
+```math
 \varepsilon_i = E_0 + \sum_{t=1}^{T} \mathcal R^{(t)}\big(h^{(t)}_i\big), \qquad E = \sum_i \varepsilon_i ,
-$$
+```
 
 with a linear readout after the first layer and a small multilayer perceptron after the last. $E_0$ is a fixed per-atom reference energy (here the average energy per atom of the training set, −7.494 eV), so the network only learns the interaction energy. Forces and stress follow from automatic differentiation of $E$, so condition 4 above holds exactly.
 
@@ -159,9 +163,9 @@ with a linear readout after the first layer and a small multilayer perceptron af
 
 **Loss and training.** The 53,584 parameters $\boldsymbol\theta$ are found by stochastic gradient descent (AMSGrad), not least squares:
 
-$$
+```math
 \mathcal L(\boldsymbol\theta) = \frac{\lambda_E}{B} \sum_{n=1}^{B} \left(\frac{E_n(\boldsymbol\theta) - E^{\mathrm{DFT}}_n}{N_n}\right)^2 + \frac{\lambda_F}{3\sum_n N_n} \sum_{n=1}^{B}\sum_{i\in n} \big|\mathbf F_i(\boldsymbol\theta) - \mathbf F^{\mathrm{DFT}}_i\big|^2 .
-$$
+```
 
 Training runs in two stages: $\lambda_E = 1$, $\lambda_F = 100$ for 75 epochs, so the model first learns the shape of the energy surface (its gradients); then $\lambda_E = 1000$ for the last 25 epochs at a lower learning rate, which pins down the absolute energies. An exponential moving average of the weights (decay 0.99) and stochastic weight averaging in stage two smooth the parameters. In the log, the validation energy error falls from about 170 to 22 meV/atom within two epochs of the stage change, and ends at 6.4 meV/atom.
 
@@ -171,10 +175,10 @@ Training runs in two stages: $\lambda_E = 1$, $\lambda_F = 100$ for 75 epochs, s
 
 The v3 campaign adds configurations the reference data lacks. All are computed with identical GPAW settings (PBE, plane waves 450 eV, k-point density 5.0 points per Å⁻¹, Γ-centred, Fermi–Dirac smearing 0.1 eV). GPAW and VASP use different pseudopotentials, so total energies differ by a constant per atom. This is removed with one hcp reference cell computed in both:
 
-$$
+```math
 E^{\mathrm{aligned}}_n = E^{\mathrm{GPAW}}_n + N_n\,\Delta, \qquad
 \Delta = \varepsilon^{\mathrm{ref}}_{\mathrm{hcp}} - \varepsilon^{\mathrm{GPAW}}_{\mathrm{hcp}} = -1.194 \text{ eV/atom}.
-$$
+```
 
 The alignment is checked on energy *differences*, which do not depend on Δ: bcc − hcp and fcc − hcp from GPAW (110 and 57 meV/atom) agree with the reference data as reproduced by POD v1 (105 and 52 meV/atom) within 5 meV/atom. Forces need no correction. Each new category is weighted by repeating it $w_c$ times in the training set, which multiplies its terms in the least-squares loss by $w_c$ (ω × 4, path × 3, defects × 3; liquid and hot solid × 2 and surfaces × 3 once they finish).
 
