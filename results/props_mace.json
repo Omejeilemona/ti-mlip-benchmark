@@ -1,0 +1,20 @@
+cuequivariance or cuequivariance_torch is not available. Cuequivariance acceleration will be disabled.
+{
+ "hcp_a": 2.924,
+ "hcp_c_over_a": 1.6121,
+ "E_hcp": -7.8337,
+ "V_hcp": 17.4511,
+ "C11": 164.4665,
+ "C12": 73.7101,
+ "C13": 51.2507,
+ "C33": 208.6158,
+ "C44": 54.6291,
+ "C66": 45.4459,
+ "E_bcc": -7.7296,
+ "dE_bcc-hcp_meV": 104.0705,
+ "E_fcc": -7.7768,
+ "dE_fcc-hcp_meV": 56.9483,
+ "E_omega": -7.8031,
+ "dE_omega-hcp_meV": 30.6133,
+ "E_vac_eV": 2.3688
+}

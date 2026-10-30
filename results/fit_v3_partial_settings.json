@@ -1,0 +1,16 @@
+{
+ "copies": {
+  "omega": 4,
+  "defect": 3,
+  "liquid": 2,
+  "hotsolid": 2,
+  "surface": 3,
+  "path": 3
+ },
+ "counts": {
+  "omega": 15,
+  "defect": 15,
+  "path": 14
+ },
+ "shift_eV_per_atom": -1.194238696797079
+}

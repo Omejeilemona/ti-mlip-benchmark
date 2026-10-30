@@ -3,5 +3,12 @@ fit/
 *.log
 *.dump
 __pycache__/
-melt_v2/
+# DFT campaign: commit scripts and finished results only
+dft_v3/queue/
+dft_v3/running/
+dft_v3/failed/
+dft_v3/logs/
+# MACE training outputs (the final model is in potentials/mace)
+/mace/
 log.lammps
+melt_v2/
