@@ -10,6 +10,9 @@
  "counts": {
   "omega": 15,
   "defect": 15,
+  "liquid": 20,
+  "hotsolid": 16,
+  "surface": 9,
   "path": 14
  },
  "shift_eV_per_atom": -1.194238696797079

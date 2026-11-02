@@ -14,8 +14,8 @@ This repository fits machine-learned interatomic potentials (MLIPs) for titanium
 | `potentials/pod_v1` | POD potential fitted to the public DFT data |
 | `potentials/pod_v2_omega` | POD potential with added ω-Ti DFT data (this work) |
 | `potentials/mace` | MACE neural-network potential (ASE / PyTorch model file) |
-| `potentials/pod_v3_partial` | POD refitted with the first 48 configurations of the v3 DFT campaign |
-| `dft_v3` | v3 DFT campaign (GPAW): structure generation, job queue, and finished calculations in `done/` |
+| `potentials/pod_v3` | POD refitted with the reference data plus all 93 configurations of the v3 DFT campaign |
+| `dft_v3` | v3 DFT campaign (GPAW): structure generation, job-queue workflow, and the 93 results in `done/` |
 | `data_mace` | Exact MACE training, validation and test sets (extended XYZ) |
 | `data_omega` | New GPAW-PBE calculations: ω-Ti and hcp/bcc/fcc alignment structures |
 | `scripts` | Data conversion, fitting, held-out testing, property and melting calculations |
@@ -27,7 +27,7 @@ This repository fits machine-learned interatomic potentials (MLIPs) for titanium
 - **DFT reference.** 5,704 configurations of 256 Ti atoms (hcp, bcc, fcc) with energies, forces and virials, from Röcken & Zavadlav, *npj Comput. Mater.* 10, 69 (2024), Apache-2.0 ([repository](https://github.com/tummfm/Fused-EXP-DFT-MLP)). The data originate from Wen *et al.*, *npj Comput. Mater.* 7, 206 (2021) (VASP, PBE). "Init" = near-lattice and strained structures (1,469); "Bulk" = finite-temperature MD snapshots up to hot, disordered states (4,235).
 - **Split.** 1,500 configurations (600 Init + 900 Bulk) are used for fitting. All errors below are on a **held-out test set of 300 configurations (76,800 atoms)** drawn from the remaining 4,204 and never used in fitting.
 - **Check.** Virials were verified against the slope of the DFT energy–volume curve (correlation 0.997) before use.
-- **v3 DFT campaign (this work, in progress).** 93 new GPAW-PBE configurations chosen to fill the gaps of the reference data: ω phase (15), the hcp → ω transition path (14), vacancies and interstitials (15), liquid (20), hot solid near melting (16) and surfaces (9), plus 4 alignment cells. Small cells (3–48 atoms) keep each calculation to minutes or a few hours on a laptop. Liquid and hot-solid snapshots come from short MD runs with POD v1. The first 48 (alignment, ω, path, defects) are finished and used in POD v3 (partial) below; the liquid, hot-solid and surface jobs are running.
+- **v3 DFT campaign (this work).** 93 new GPAW-PBE configurations chosen to fill the gaps of the reference data: ω phase (15), the hcp → ω transition path (14), vacancies and interstitials (15), liquid (20), hot solid near melting (16) and surfaces (9), plus 4 alignment cells. Small cells (3–48 atoms) keep each calculation between minutes and a few hours on a workstation. Liquid and hot-solid snapshots come from short MD runs with POD v1. All 93 calculations are complete and used in POD v3.
 - **New ω-Ti data (POD v2).** The reference dataset contains no ω phase. I computed 7 ω-Ti configurations (5 volumes, 2 rattled cells) and hcp/bcc/fcc alignment structures with GPAW (PBE, plane waves 500 eV, Fermi–Dirac 0.1 eV). GPAW energies were shifted by a constant per atom to match the hcp energy of the reference data. The shifted GPAW energy differences agree with the reference data (bcc − hcp 111 vs 105 meV/atom; fcc − hcp 57 vs 52 meV/atom).
 
 ## Method: the physics and the equations
@@ -189,7 +189,7 @@ The alignment is checked on energy *differences*, which do not depend on Δ: bcc
 | **SNAP** | Linear bispectrum, 2J = 10, r_cut = 5.0 Å, ZBL core | Reference DFT | FitSNAP (SVD); energy, force and Init stress |
 | **POD v1** | 2-, 3- and 4-body proper orthogonal descriptors, r_cut = 5.0 Å | Reference DFT | LAMMPS `fitpod`; energy and force |
 | **POD v2** | As POD v1 | Reference DFT + ω-Ti (this work) | As POD v1; ω set weighted ×12 |
-| POD v3 (partial) | As POD v1 | Reference DFT + first 48 v3 configurations (ω, path, defects) | As POD v1; copies ω × 4, path × 3, defects × 3 |
+| POD v3 | As POD v1 | Reference DFT + all 93 v3 configurations | As POD v1; copies ω × 4, path × 3, defects × 3, surfaces × 3, liquid × 2, hot solid × 2 |
 | **MACE** | Equivariant message passing: 2 layers, 32 channels, max_L = 0, correlation order 3, r_cut = 5.0 Å | Reference DFT, **400 configurations** (150 Init + 250 Bulk) | `mace_run_train`, 100 epochs on CPU; two-stage loss (forces first, then a higher energy weight for the last 25 epochs, with weight averaging) |
 | MEAM-spline | Classical reference (Hennig *et al.* 2008) | — | — |
 
@@ -197,12 +197,12 @@ The alignment is checked on energy *differences*, which do not depend on Δ: bcc
 
 ### 1. Accuracy on held-out DFT data
 
-| Held-out test set | MEAM-spline* | SNAP | POD v1 | POD v2 | POD v3 (partial) | **MACE** |
+| Held-out test set | MEAM-spline* | SNAP | POD v1 | POD v2 | POD v3 | **MACE** |
 |---|---|---|---|---|---|---|
-| Energy RMSE, near-lattice (meV/atom) | 63 | 5.0 | **3.1** | 4.5 | 4.1 | 4.3 |
+| Energy RMSE, near-lattice (meV/atom) | 63 | 5.0 | **3.1** | 4.5 | 4.4 | 4.3 |
 | Energy RMSE, hot/disordered (meV/atom) | 47 | 26 | 11 | 12 | 12 | **10.3** |
 | Force RMSE, near-lattice (eV/Å) | 0.060 | 0.030 | 0.021 | 0.019 | 0.019 | **0.014** |
-| Force RMSE, hot/disordered (eV/Å) | 0.66 | 0.49 | 0.24 | 0.27 | 0.26 | **0.18** |
+| Force RMSE, hot/disordered (eV/Å) | 0.66 | 0.49 | 0.24 | 0.27 | 0.27 | **0.18** |
 
 \*MEAM energies are compared after removing a constant offset (different energy zero). Force standard deviation in the DFT data: 0.064 eV/Å (near-lattice) and 1.19 eV/Å (hot/disordered). All models are tested on the same 300 configurations. MACE was trained on 400 configurations, against 1,500 for SNAP and POD, because training on a CPU is slow.
 
@@ -210,24 +210,36 @@ The alignment is checked on energy *differences*, which do not depend on Δ: bcc
 
 ### 2. Material properties
 
-| Property | MEAM-spline | SNAP | POD v1 | POD v2 | **POD v3 (partial)** | MACE | Reference |
+| Property | MEAM-spline | SNAP | POD v1 | POD v2 | **POD v3** | MACE | Reference |
 |---|---|---|---|---|---|---|---|
-| hcp a (Å) | 2.931 | 2.952 | 2.940 | 2.928 | 2.930 | 2.924 | 2.951 (exp.) |
-| c/a | 1.596 | 1.567 | 1.579 | 1.603 | 1.595 | 1.612 | 1.588 (exp.) |
+| hcp a (Å) | 2.931 | 2.952 | 2.940 | 2.928 | 2.931 | 2.924 | 2.951 (exp.) |
+| c/a | 1.596 | 1.567 | 1.579 | 1.603 | 1.594 | 1.612 | 1.588 (exp.) |
 | C11 (GPa) | 174 | 234 | 166 | 163 | 165 | 164 | 176 (exp., 4 K) |
-| C12 (GPa) | 95 | 89 | 87 | 81 | 84 | 74 | 87 (exp., 4 K) |
+| C12 (GPa) | 95 | 89 | 87 | 81 | 85 | 74 | 87 (exp., 4 K) |
 | C13 (GPa) | 73 | 91 | 80 | 79 | 79 | 51 | 68 (exp., 4 K) |
-| C33 (GPa) | 189 | 194 | 176 | 200 | 198 | 209 | 191 (exp., 4 K) |
+| C33 (GPa) | 189 | 194 | 176 | 200 | **193** | 209 | 191 (exp., 4 K) |
 | C44 (GPa) | 58 | 51 | 48 | 57 | 58 | 55 | 51 (exp., 4 K) |
-| E(bcc) − E(hcp) (meV/atom) | 111 | 106 | 105 | 109 | 108 | 104 | 111 (GPAW, this work) |
-| E(fcc) − E(hcp) (meV/atom) | 39 | 54 | 52 | 54 | 53 | 57 | 57 (GPAW, this work) |
-| **E(ω) − E(hcp) (meV/atom)** | −5 | +123 | +55 | **−1.7** | **−2.7** | +31 | **−4 (GPAW, this work)** |
-| Vacancy formation (eV) | 2.19 | 1.78 | 2.08 | 2.43 | 2.19 | 2.37¶ | ≈ 2.0 (DFT)† |
-| Melting point (K) | not converged‡ | not run | **1877 ± 9** | ≈ 1870§ | pending | not run | 1941 (exp.) |
+| E(bcc) − E(hcp) (meV/atom) | 111 | 106 | 105 | 109 | 106 | 104 | 111 (GPAW, this work) |
+| E(fcc) − E(hcp) (meV/atom) | 39 | 54 | 52 | 54 | 51 | 57 | 57 (GPAW, this work) |
+| **E(ω) − E(hcp) (meV/atom)** | −5 | +123 | +55 | −1.7 | **−3.7** | +31 | **−4 (GPAW, this work)** |
+| Vacancy formation (eV) | 2.19 | 1.78 | 2.08 | 2.43 | 2.28 | 2.37¶ | ≈ 2.0 (DFT)† |
+| Melting point (K) | not converged‡ | not run | **1877 ± 9** | ≈ 1870§ | not run | not run | 1941 (exp.) |
 
 Experimental elastic constants are those provided with the dataset (4 K). †Approximate literature DFT value; see Hennig *et al.* 2008. ‡The MEAM coexistence run recrystallised; it needs a longer run with a larger liquid fraction. §POD v2 gave 1869 ± 9 K, but the final snapshot no longer shows a clearly liquid region (solid-like fraction 0.58–0.82 in every slab), so this value is indicative only. ¶MACE properties are computed in ASE with smaller cells (48-atom hcp, 144-atom vacancy cell) to save CPU time; the vacancy value may shift slightly in a larger cell.
 
-### 3. Melting point (POD v1)
+### 3. What each new data category adds
+
+The v3 configurations were split again to test the new data on configurations the fit has not seen: 10 of them (4 liquid, 4 hot solid, 2 surface) were held out, POD v3 was refitted on the remaining 83, and both potentials were evaluated on the held-out 10 (`scripts/heldout_newdata.py`).
+
+| Held-out v3 configurations | POD v1, energy (meV/atom) | POD v3, energy (meV/atom) | POD v1, force (eV/Å) | POD v3, force (eV/Å) |
+|---|---|---|---|---|
+| Liquid (4) | 8.0 | 8.7 | 0.20 | 0.22 |
+| Hot solid (4) | 9.1 | **4.9** | 0.18 | 0.19 |
+| Surface (2) | 60 | **10** | 0.17 | 0.25 |
+
+Surface data reduces the surface energy error six-fold, and hot-solid data halves the hot-solid energy error. Neither the liquid nor the hot-solid data reduces the force error, which stays near 0.2 eV/Å for every POD variant. The liquid result is partly expected, because the liquid snapshots were generated with POD v1 itself; the force result indicates that the fixed linear POD basis, not the training data, now limits the accuracy. This is the regime where a more flexible model such as MACE should gain most.
+
+### 4. Melting point (POD v1)
 
 Solid (bcc)–liquid coexistence in the NPH ensemble (1,152 atoms, 30 ps). The final snapshot still contains both phases (ten Wolde Q6 bond-order analysis), so the mean temperature is a valid estimate of the melting point: **1877 ± 9 K**, 3% below experiment.
 
@@ -238,11 +250,11 @@ Solid (bcc)–liquid coexistence in the NPH ensemble (1,152 atoms, 30 ps). The f
 1. **Body order matters more than descriptor count.** Moving from linear SNAP to 4-body POD halved the energy and force errors on hot, disordered structures. It also brought C11, C12 and C44 within 6% of experiment, even without stress data in the POD fit (C13 and C33 remain 8–18% off).
 2. **A potential is only as good as its training data.** Both MLIPs fitted to the reference data predict ω-Ti far above hcp (+55 to +123 meV/atom), whereas DFT puts it slightly below (−4 meV/atom). The dataset contains no ω structures.
 3. **Targeted data fixes it, at a price.** Adding just 7 small ω-Ti DFT calculations (POD v2) corrects the ω–hcp ordering (+55 → −1.7 meV/atom) while keeping held-out errors within about 10% of POD v1. It also shifts c/a, C33 and the vacancy energy, which shows that a handful of extra structures is not enough to balance the fit. Systematic active learning (ω, vacancies, surfaces, liquid) is the next step.
-4. **Systematic data beats a handful of structures.** With only the first 48 configurations of the v3 campaign (ω, transition path, defects), POD v3 keeps the correct ω ordering (−2.7 meV/atom, DFT −4) and brings the vacancy energy down from 2.43 eV (v2) to 2.19 eV, and moves c/a closer to experiment (1.595 against 1.603 in v2, 1.588 measured), while held-out errors stay at the v1/v2 level. Liquid, hot-solid and surface data are still being computed; they target the hot-structure force error and the melting point.
+4. **Systematic data fixes properties; model capacity limits forces.** With all 93 v3 configurations, POD v3 keeps the correct ω ordering (−3.7 meV/atom, DFT −4 to −5), brings C33 to 193 GPa (experiment 191) and c/a closer to experiment, and reduces the surface energy error six-fold on held-out surfaces, while held-out errors on the reference data stay at the v1 level. The force error on hot and liquid structures, however, does not fall below about 0.2 eV/Å with any training set (Section 3): the linear model has reached its capacity.
 5. **The neural network is more accurate where it has data, and just as blind where it has none.** On the same held-out set, MACE cuts force errors by about a third compared with POD v1 (0.014 vs 0.021 eV/Å near-lattice, 0.18 vs 0.24 eV/Å on hot, disordered structures), although it was trained on fewer than a third as many configurations. It also gives the closest fcc − hcp energy. But trained on the same data, which has no ω structures, it also puts ω above hcp (+31 meV/atom), and its C13 and c/a are further from experiment than POD's. Flexibility does not replace missing data: the ω fix still has to come from DFT.
 6. **POD is the practical choice for large simulations.** It is more accurate than the 2J = 10 SNAP model here and about 20× faster.
 
-**Which potential to use:** POD v1 for bulk hcp/bcc/liquid properties, POD v2 where the ω phase matters (for example high-pressure or β-quenched Ti), and MACE where force accuracy matters more than speed. A third version (v3), refitted on a larger set of new DFT calculations (ω, transition path, defects, liquid, hot solid, surfaces), is in progress for both POD and MACE. Both are demonstration potentials; check them against your target properties before production use.
+**Which potential to use:** POD v3 for general use, including the ω phase, defects and surfaces; POD v1 where a validated melting point is needed (Section 4); and MACE where force accuracy matters more than speed. POD v3 is the recommended linear potential: it combines the reference data with all 93 new DFT calculations. A MACE model trained on the same v3 data is the next step. Both are demonstration potentials; check them against your target properties before production use.
 
 ## Reproduce
 
@@ -267,6 +279,9 @@ python scripts/gpaw_omega.py
 cd dft_v3 && python scripts/gen_structures.py ../potentials/pod_v1 && bash run_dft.sh 2 && cd ..
 bash dft_v3/status.sh                                    # progress
 python scripts/fit_v3.py                                 # align energies, add copies, fit potentials/pod_v3
+python scripts/heldout_newdata.py split && DONE_DIR=dft_v3/train python scripts/fit_v3.py   # Section 3 test (overwrites potentials/pod_v3)
+python scripts/heldout_newdata.py eval potentials/pod_v1 potentials/pod_v3
+python scripts/fit_v3.py                                 # restore the final POD v3
 # MACE (pip install mace-torch)
 python scripts/mace_prepare.py 150 250                   # same split as SNAP/POD -> mace/ (identical to data_mace/)
 cd mace && bash ../scripts/run_mace.sh && cd ..           # about 5 h on a CPU; re-run the same command to resume

@@ -12,3 +12,5 @@ dft_v3/logs/
 /mace/
 log.lammps
 melt_v2/
+dft_v3/train/
+dft_v3/test/

@@ -1,0 +1,12 @@
+POD v1
+   liquid: n=4 E_rmse=8.0 meV/at  F_rmse=0.197 eV/A  (DFT F std 0.98)
+   hotsolid: n=4 E_rmse=9.1 meV/at  F_rmse=0.182 eV/A  (DFT F std 0.87)
+   surface: n=2 E_rmse=60.2 meV/at  F_rmse=0.167 eV/A  (DFT F std 0.35)
+POD v3 partial
+   liquid: n=4 E_rmse=7.6 meV/at  F_rmse=0.219 eV/A  (DFT F std 0.98)
+   hotsolid: n=4 E_rmse=6.2 meV/at  F_rmse=0.186 eV/A  (DFT F std 0.87)
+   surface: n=2 E_rmse=72.2 meV/at  F_rmse=0.183 eV/A  (DFT F std 0.35)
+POD v3 (new data, test configs held out)
+   liquid: n=4 E_rmse=8.7 meV/at  F_rmse=0.215 eV/A  (DFT F std 0.98)
+   hotsolid: n=4 E_rmse=4.9 meV/at  F_rmse=0.185 eV/A  (DFT F std 0.87)
+   surface: n=2 E_rmse=9.8 meV/at  F_rmse=0.248 eV/A  (DFT F std 0.35)
