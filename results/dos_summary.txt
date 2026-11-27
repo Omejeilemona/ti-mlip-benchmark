@@ -1,0 +1,8 @@
+hcp   g(EF) = 1.069 states/eV/atom   gamma = 2.52 mJ/mol/K^2
+bcc   g(EF) = 2.270 states/eV/atom   gamma = 5.35 mJ/mol/K^2
+fcc   g(EF) = 1.741 states/eV/atom   gamma = 4.10 mJ/mol/K^2
+omega g(EF) = 0.962 states/eV/atom   gamma = 2.27 mJ/mol/K^2
+Sommerfeld estimate of the change of F(phase) - F(hcp) from kTe = 0 (meV/atom):
+  bcc   0.1 eV:   -19.8  0.2 eV:   -79.0  0.3 eV:  -177.8
+  fcc   0.1 eV:   -11.0  0.2 eV:   -44.2  0.3 eV:   -99.4
+  omega 0.1 eV:     1.8  0.2 eV:     7.1  0.3 eV:    15.9

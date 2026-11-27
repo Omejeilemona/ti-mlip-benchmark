@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+message: "If you use these potentials, data or scripts, please cite the paper below and the Zenodo record."
+title: "ti-mlip-benchmark: machine-learned interatomic potentials for titanium, including an electron-temperature-dependent correction"
+version: "1.0.0"
+date-released: "2026-11-27"
+license: MIT
+repository-code: "https://github.com/Omejeilemona/ti-mlip-benchmark"
+doi: "10.5281/zenodo.24591569"
+authors:
+  - family-names: Omeje
+    given-names: Ilemona S.
+    affiliation: "Surface Optimization Research & Consulting (SOREC) LLC"
+  - family-names: Alhassan
+    given-names: Moses O.
+    affiliation: "Surface Optimization Research & Consulting (SOREC) LLC"
+  - family-names: Itina
+    given-names: Tatiana E.
+    affiliation: "Laboratoire Hubert Curien, CNRS, Université Jean Monnet Saint-Étienne"
+keywords:
+  - titanium
+  - machine-learned interatomic potentials
+  - electron temperature
+  - two-temperature model
+  - femtosecond laser
+  - LAMMPS
+preferred-citation:
+  type: article
+  title: "Electron-temperature-dependent machine-learned potentials reveal hot-electron effects on phase transformations and nanoparticle fragmentation in titanium"
+  authors:
+    - family-names: Omeje
+      given-names: Ilemona S.
+    - family-names: Alhassan
+      given-names: Moses O.
+    - family-names: Itina
+      given-names: Tatiana E.
+  journal: "Physical Review Materials (submitted)"
+  year: 2026

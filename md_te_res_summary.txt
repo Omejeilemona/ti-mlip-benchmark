@@ -1,0 +1,3 @@
+kTe = 1.0 eV (nvt, T = 300 K): after 20.0 ps  hcp 0.93  bcc 0.00  fcc 0.07  other 0.00  P = 16.6 GPa  V = 17.46 A3/atom
+kTe = 0.5 eV (nvt, T = 300 K): after 20.0 ps  hcp 0.65  bcc 0.01  fcc 0.33  other 0.01  P = 5.2 GPa  V = 17.46 A3/atom
+kTe = 0.5 eV (npt, T = 300 K): after 20.0 ps  hcp 0.00  bcc 0.23  fcc 0.74  other 0.03  P = 0.2 GPa  V = 18.22 A3/atom

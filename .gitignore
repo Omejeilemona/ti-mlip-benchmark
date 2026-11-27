@@ -1,16 +1,44 @@
+# Reference data (downloaded by get_data.sh) and fit inputs rebuilt by the scripts
 data/
 fit/
-*.log
-*.dump
-__pycache__/
-# DFT campaign: commit scripts and finished results only
+
+# MACE v3 training sets: archived on Zenodo (too large for GitHub)
+mace_v3/
+mace_v3.zip
+/mace/
+
+# Raw DFT logs and unfinished or skipped jobs (logs are archived on Zenodo)
 dft_v3/queue/
 dft_v3/running/
 dft_v3/failed/
 dft_v3/logs/
-# MACE training outputs (the final model is in potentials/mace)
-/mace/
-log.lammps
-melt_v2/
 dft_v3/train/
 dft_v3/test/
+dft_te/queue/
+dft_te/running/
+dft_te/failed/
+dft_te/logs/
+dft_te/hold/
+dft_te/skipped/
+dft_te/te_preview*
+
+# Large simulation outputs
+*.dump
+*.log
+log.lammps
+*.out
+melt_v2/
+results/*.npz
+potentials/*/Ti_training_analysis.pod
+potentials/*/Ti_test_analysis.pod
+
+# Third-party potential (download from the NIST Interatomic Potentials Repository)
+potentials/Ti1_Mendelev2016.eam.fs
+
+# Archives and build folders
+*.tar.gz
+*.zip
+zenodo_release/
+
+# Python
+__pycache__/

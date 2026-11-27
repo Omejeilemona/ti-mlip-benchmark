@@ -1,0 +1,10 @@
+kTe = 1.0 eV (npt, T = 300 K): after 20.0 ps  hcp 0.98  bcc 0.00  fcc 0.02  other 0.00  P = -0.0 GPa  V = 22.57 A3/atom
+kTe = 0.5 eV (npt, T = 300 K): after 20.0 ps  hcp 1.00  bcc 0.00  fcc 0.00  other 0.00  P = 0.1 GPa  V = 18.52 A3/atom
+kTe = 0.0 eV (npt, T = 300 K): after 20.0 ps  hcp 1.00  bcc 0.00  fcc 0.00  other 0.00  P = -0.0 GPa  V = 17.53 A3/atom
+kTe = 2.0 eV (npt, T = 300 K): after 20.0 ps  hcp 0.91  bcc 0.00  fcc 0.09  other 0.00  P = -0.0 GPa  V = 28.86 A3/atom
+kTe = 1.5 eV (npt, T = 300 K): after 20.0 ps  hcp 0.99  bcc 0.00  fcc 0.01  other 0.00  P = -0.0 GPa  V = 26.09 A3/atom
+kTe = 0.0 eV (nvt, T = 300 K): after 20.0 ps  hcp 0.99  bcc 0.00  fcc 0.01  other 0.00  P = 0.5 GPa  V = 17.46 A3/atom
+kTe = 0.5 eV (nvt, T = 300 K): after 20.0 ps  hcp 0.99  bcc 0.00  fcc 0.01  other 0.00  P = 6.4 GPa  V = 17.46 A3/atom
+kTe = 1.0 eV (nvt, T = 300 K): after 20.0 ps  hcp 1.00  bcc 0.00  fcc 0.00  other 0.00  P = 17.8 GPa  V = 17.46 A3/atom
+kTe = 1.5 eV (nvt, T = 300 K): after 20.0 ps  hcp 1.00  bcc 0.00  fcc 0.00  other 0.00  P = 29.5 GPa  V = 17.46 A3/atom
+kTe = 2.0 eV (nvt, T = 300 K): after 20.0 ps  hcp 1.00  bcc 0.00  fcc 0.00  other 0.00  P = 39.5 GPa  V = 17.46 A3/atom

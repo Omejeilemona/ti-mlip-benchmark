@@ -1,0 +1,18 @@
+{
+ "pot": "eamte",
+ "potdir": "../potentials",
+ "d": 2.0,
+ "eabs": 1.5,
+ "fwhm": 0.5,
+ "tpeak": 1.0,
+ "tend": 30.0,
+ "T0": 300.0,
+ "G": null,
+ "gtable": "G_Ti_LinZhigilei.dat",
+ "ce": "Ce_Ti_LinZhigilei.dat",
+ "dt": 0.001,
+ "ncouple": 10,
+ "seed": 12345,
+ "out": "eamte_d2_e1.5",
+ "dumpat": "0,1,2,4,8,15,30"
+}

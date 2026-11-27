@@ -1,0 +1,15 @@
+{
+ "copies": {
+  "H": 3,
+  "I": 2,
+  "B": 4,
+  "A": 1
+ },
+ "counts": {
+  "Cluster13": 4,
+  "Expanded": 4,
+  "Burgers": 10,
+  "Eos": 12
+ },
+ "shift": -1.193630526163325
+}

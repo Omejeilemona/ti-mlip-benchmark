@@ -1,3 +1,4 @@
+"""Solid fraction by z-slab from the Q6 bond-order parameter (ten Wolde et al.). usage: python3 scripts/q6.py run_final.dump"""
 import numpy as np, sys
 from scipy.spatial import cKDTree
 from scipy.special import sph_harm_y
@@ -12,12 +13,10 @@ for m in range(-6,7):
     y=sph_harm_y(6,m,th,ph); yo=sph_harm_y(6,m,np.pi-th,ph+np.pi)
     np.add.at(q[:,m+6],pairs[:,0],y); np.add.at(q[:,m+6],pairs[:,1],yo)
 np.add.at(cnt,pairs[:,0],1); np.add.at(cnt,pairs[:,1],1)
-q/=np.maximum(cnt,1)[:,None]; q6=np.sqrt(4*np.pi/13*np.sum(abs(q)**2,1))
+q/=np.maximum(cnt,1)[:,None]
 z=r[:,2]; bins=np.linspace(0,L[2],13); k=np.digitize(z,bins)
-prof=[q6[k==i].mean() for i in range(1,13)]
-print(f.split('/')[-1],'Q6 by z-slab:',np.round(prof,2),' frac solid-like (Q6>0.35):',round((q6>0.35).mean(),2))
 qn=q/np.linalg.norm(q,axis=1)[:,None]
 dot=np.real(np.sum(qn[pairs[:,0]]*np.conj(qn[pairs[:,1]]),1))
 con=np.zeros(n); np.add.at(con,pairs[:,0],dot>0.5); np.add.at(con,pairs[:,1],dot>0.5)
 sol=con>=7
-print('  solid fraction by z-slab:',np.round([sol[k==i].mean() for i in range(1,13)],2),' total',round(sol.mean(),2))
+print(f.split('/')[-1],' solid fraction by z-slab:',np.round([sol[k==i].mean() for i in range(1,13)],2),' total',round(sol.mean(),2))
