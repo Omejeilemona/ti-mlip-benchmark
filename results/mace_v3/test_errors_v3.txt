@@ -1,0 +1,2 @@
+Init  held-out: energy RMSE    2.3 meV/atom, force RMSE 0.006 eV/A  (150 configs)
+Bulk  held-out: energy RMSE    6.5 meV/atom, force RMSE 0.159 eV/A  (150 configs)

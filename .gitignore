@@ -3,7 +3,7 @@ data/
 fit/
 
 # MACE v3 training sets: archived on Zenodo (too large for GitHub)
-mace_v3/
+/mace_v3/
 mace_v3.zip
 /mace/
 
